@@ -1,0 +1,45 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    int n, k;
+    cin >> n >> k;
+    int arr[2*n + 10];
+
+    for(int i = n + 1; i <= 2*n; i++) {
+        cin >> arr[i];
+    }
+
+    for(int i = 1; i <= n; i++) arr[i] = arr[n + i];
+
+    int l = 1, r = 1;
+    set<int> st;
+    int ans = 0;
+    while(r <= 2 * n) {
+        //cout << l << " " << r << endl;
+        if(st.find(arr[r]) == st.end()) {
+            st.insert(arr[r]);
+            r++;
+            auto mn = st.begin();
+            auto mx = st.rbegin();
+            if(*mx - *mn < k) {
+                //cout << *mx << " "  << *mn << endl;
+                int dex = st.size();
+                ans = max(ans, dex);
+            } else {
+                while(*st.rbegin() - *st.begin() >= k && st.size()) {
+                    st.erase(arr[l]);
+                    l++;
+                }
+            }
+        } else {
+            while(st.find(arr[r]) != st.end() && st.size()) {
+                st.erase(arr[l]);
+                l++;
+            }
+            st.insert(arr[r]);
+            r++;
+        }
+    }
+    cout << k - ans;
+}
